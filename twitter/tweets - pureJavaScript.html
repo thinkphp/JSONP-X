@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+   <title>select * from html where url="http://twitter.com/thinkphp" and xpath="//h2[@class='thumbs clearfix']"</title>
+   <link rel="stylesheet" href="http://yui.yahooapis.com/2.7.0/build/reset-fonts-grids/reset-fonts-grids.css" type="text/css">
+   <style type="text/css">
+   html,body{font-family: helvetica,arial,sans-serif}
+   #bd{background-color: #ccc}
+   #tweets ul {}
+   #tweets li { 
+    margin: 0;
+    border-bottom: 1px dashed #ccc;
+    padding: 15px 5px;
+    overflow: hidden;
+    border-bottom: 1px solid #eee;}
+   #tweets li:hover {background-color: #69c;color: #fff}
+    h1{font-size: 40px;background: #69c}
+   #ft{color: #444;text-align: left} 
+   a{color: #393}
+   #tweets li:hover a{color: #111}
+   </style>
+</head>
+<body>
+<div id="doc" class="yui-t7">
+   <div id="hd" role="banner"><h1>select * from html where url="http://twitter.com/{user}" and xpath="//span[@class='entry-content']"</h1></div>
+   <div id="bd" role="main">
+	<div class="yui-g" id="tweets">Loading...</div>
+   </div>
+  <div id="ft" role="contentinfo"><p>Created by @<a href="http://twitter.com/thinkphp">thinkphp</a></p></div>
+</div>
+<script type="text/javascript">
+ function seed(o){
+  var data = o.results; 
+  var output = '<ul>'; 
+      for(var i=0;i<data.length;i++) {
+             output += clean(data[i]);   
+      }
+      output += '</ul>';
+      document.getElementById('tweets').innerHTML = output;
+ }//end function
+
+ function clean(text) {
+      text = text.replace('<span','<li'); 
+      text = text.replace('</span>','</li>');
+      text = text.replace(/href="\//gi,'href="http://twitter.com/');
+   return text;
+ }//end function
+</script>
+<script type="text/javascript" src="http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22http%3A%2F%2Ftwitter.com%2Fthinkphp%22%20and%20xpath%3D%22%2F%2Fspan%5B%40class%3D'entry-content'%5D%22&format=xml&callback=seed"></script>
+</body>
+</html>

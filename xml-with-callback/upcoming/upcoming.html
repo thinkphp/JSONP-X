@@ -1,0 +1,272 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+   <title>XML with callback (JSON-P-X)</title>
+   <link  href="http://fonts.googleapis.com/css?family=Inconsolata:regular&subset=latin" rel="stylesheet" type="text/css" >  
+   <link rel="stylesheet" href="http://yui.yahooapis.com/2.7.0/build/reset-fonts-grids/reset-fonts-grids.css" type="text/css">
+   <link rel="stylesheet" href="http://yui.yahooapis.com/2.7.0/build/base/base.css" type="text/css">
+   <style type="text/css">
+
+    html { background: #1A1B1F url('http://assets3.twitter.com/images/themes/theme9/bg.gif') fixed no-repeat top left;}
+ 
+    body {  font-family: 'Inconsolata', serif;font-size: 22px}
+
+    #hd h1{color: #fff;font-size: 30px}
+
+    p{color: #00B1F9;clear: both}
+
+    #container {width: 200px;}
+
+    #following_list{padding:5px 10px 5px 14px;}
+
+    #following_list span{float:left;padding:0 3px 2px 1px;}
+
+    #following_list img{padding:0;}
+  
+    #ft {margin-top: 10px;font-family:arial;font-size: 10px;}
+
+    #ft p{color: #fff}
+  
+    #ft a{color: #fff}
+
+    ul{clear: both}
+
+    #recent_posts,#widgets-upcoming-widget-4,#widgets-delicious-widget-4,#widgets-recent-posts-3{width:23em;border:1px solid #d9d9d9;margin:1em 0;padding: 10px}
+    #recent_posts,#widgets-upcoming-widget-4,#widgets-delicious-widget-4,#widgets-recent-posts-3 h2 {color: #fff}
+
+    a {color: #ccc}
+
+    h4{color: orange}
+
+    span.viewallAbs {float: right;}
+
+    .blogRackTitle a{color: #ccc}
+
+    pre{color: #ccc;clear: both;margin-top: 20px}
+
+ul.projects {width: 700px;position: relative}
+.projects li{
+float:left;
+list-style-type:none;
+margin-bottom:15px;
+margin-right:52px;
+position:relative;
+height:80px;
+width:187px;
+border: 1px solid #ccc;
+}
+
+ul, ol {margin:0 1.5em 1.5em;}
+.projects li span.downloads {font-size:30px;position:absolute;top:0;right:3px;}
+
+.projects li .name {
+color:orange;
+display:block;
+font-weight:bold;
+margin-bottom:5px;
+}
+
+.blue {color: #fff}
+   </style>
+</head>
+<body>
+<div id="doc" class="yui-t7">
+   <div id="hd" role="banner"><h1>XML with callback (JSON-P-X)</h1></div>
+
+   <div id="bd" role="main">
+
+	<div class="yui-g">
+             <pre><code>select * from html where url="http://twitter.com/thinkphp" and xpath = "//div[@id=\'following_list\']"</code></pre>
+             <p>Following</p>
+             <div id="container"></div>
+
+             <pre><code>select * from html where url="http://www.wait-till-i.com/talks-and-conference-participation/" and xpath="//ul" limit 1</code></pre>
+             <p>Upcoming</p>
+             <div id="container1"></div>
+
+             <pre><code>select * from html where url="http://developer.yahoo.net/blog/archives/2009/07/fun_with_placemaker.html" and xpath="//div[@id=\'widgets-recent-posts-3\']" limit 1</code></pre>
+             <p>Recent Posts YDN</p>
+             <div id="container2"></div>
+
+             <pre><code>select * from html where url="http://developer.yahoo.net/blog/archives/2009/07/fun_with_placemaker.html" and xpath="//div[@id=\'widgets-delicious-widget-4\']" limit 1</code></pre>
+             <p>Recent Links YDN</p>
+             <div id="container4"></div>
+
+             <pre><code>select * from html where url="http://developer.yahoo.net/blog/archives/2009/07/fun_with_placemaker.html" and xpath="//div[@id=\'widgets-upcoming-widget-4\']" limit 1</code></pre>
+             <p>Upcoming Events YDN</p>
+             <div id="container5"></div>
+
+             <p>Recent YUI Blog</p>
+             <div id="container7"></div>
+
+             <p>Forge MooTools</p>
+             <div id="forge"></div>
+
+	</div>
+
+	</div>
+
+   <div id="ft" role="contentinfo"><p>written by <a href="http://thinkphp.ro">Adrian Statescu</a> Using Twitter, YUI, YQL and JSON-P-X</p></div>
+
+</div>
+
+<script type="text/javascript" charset="utf-8">
+
+        function $(id) {return document.getElementById(id);}
+
+        function seed(o) {
+
+                 var output = $('container');
+
+                 var content = o.results[0].replace(/href="\//g,'href="http://twitter.com/');
+
+                     output.innerHTML = content;
+        }   
+
+
+        function seed2(o) {
+
+                 var output = $('container1');
+
+                 var content = o.results[0];
+
+                     output.innerHTML = content;
+        }   
+
+        function seed3(o) {
+
+                 var output = $('container2');
+
+                 var content = o.results[0];
+
+                     output.innerHTML = content;
+        }   
+
+
+        function seed4(o) {
+
+                 var output = $('container4');
+
+                 var content = o.results[0];
+
+                     output.innerHTML = content;
+        }   
+
+
+        function seed5(o) {
+
+                 var output = $('container5');
+
+                 var content = o.results[0];
+
+                     output.innerHTML = content;
+        }   
+
+        function seed7(o) {
+
+                 var output = $('container7');
+
+                 var content = o.results[0];
+
+                     output.innerHTML = content;
+        }   
+
+
+        function seed8(o) {
+
+                 var output = $('forge');
+
+                 var content = o.results[0];
+
+                     content = content.replace(/href="\//gi,'href="http://mootools.net/');
+
+                     content = content.replace(/src="\//gi,'src="http://mootools.net/');
+
+                     output.innerHTML = content;
+        }   
+
+</script>
+
+<script type="text/javascript" charset="utf-8">
+
+ (function(){
+
+ var root = 'http://query.yahooapis.com/v1/public/yql?q=';
+
+ var yql = 'select * from html where url="http://twitter.com/thinkphp" and xpath = "//div[@id=\'following_list\']"';
+
+ var src = root + encodeURIComponent(yql) + '&diagnostics=false&format=xml&callback=seed';
+
+     loadScript(src,function(){if(window.console) console.log('loaded json');});
+
+ var yql2 = 'select * from html where url="http://www.wait-till-i.com/talks-and-conference-participation/" and xpath="//ul" limit 1';
+
+ var src2 = root + encodeURIComponent(yql2) + '&diagnostics=false&format=xml&callback=seed2';
+
+     loadScript(src2,function(){if(window.console) console.log('loaded json');});
+
+
+ var yql3 = 'select * from html where url="http://developer.yahoo.net/blog/archives/2009/07/fun_with_placemaker.html" and xpath="//div[@id=\'widgets-recent-posts-3\']" limit 1';
+
+ var src3 = root + encodeURIComponent(yql3) + '&diagnostics=false&format=xml&callback=seed3';
+
+     loadScript(src3,function(){if(window.console) console.log('loaded json');});
+
+
+ var yql4 = 'select * from html where url="http://developer.yahoo.net/blog/archives/2009/07/fun_with_placemaker.html" and xpath="//div[@id=\'widgets-delicious-widget-4\']" limit 1';
+
+ var src4 = root + encodeURIComponent(yql4) + '&diagnostics=false&format=xml&callback=seed4';
+
+     loadScript(src4,function(){if(window.console) console.log('loaded json');});
+
+
+ var yql5 = 'select * from html where url="http://developer.yahoo.net/blog/archives/2009/07/fun_with_placemaker.html" and xpath="//div[@id=\'widgets-upcoming-widget-4\']" limit 1';
+
+ var src5 = root + encodeURIComponent(yql5) + '&diagnostics=false&format=xml&callback=seed5';
+
+     loadScript(src5,function(){console.log('loaded json');});
+
+
+ var yqlyui = 'select * from html where url="http://yuiblog.com/" and xpath="//div[@id=\'recent_posts\']" limit 1';
+
+ var srcyui = root + encodeURIComponent(yqlyui) + '&diagnostics=false&format=xml&callback=seed7';
+
+     loadScript(srcyui,function(){if(window.console) console.log('loaded json');});
+
+
+ var yqlforge = 'select * from html where url="http://mootools.net/forge/" and xpath="//div[@class=\'block\']" limit 1';
+
+ var srcforge = root + encodeURIComponent(yqlforge) + '&diagnostics=false&format=xml&callback=seed8';
+
+     loadScript(srcforge,function(){if(window.console) console.log('loaded json');});
+
+
+    //function to load external javascript by passing in url
+    function loadScript(url,callback) {
+
+             var s = document.createElement('script');
+                 s.type = 'text/javascript';
+    
+             //if ie
+             if(s.readyState) {
+
+                  s.onreadystatechange = function() {
+                        if(s.readyState == 'loaded' || s.readyState == 'complete') {
+                              s.onreadystatechange = null;
+                              if(callback){callback();}
+                        } 
+                  };
+             } else {
+                  s.onload = function(){
+                    if(callback) {callback();}
+                  }
+             }  
+             s.src = url;
+             document.getElementsByTagName('head')[0].appendChild(s);
+    };
+
+ })();
+</script>
+
+</body>
+</html>
