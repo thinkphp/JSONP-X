@@ -1,0 +1,168 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+   <title>select * from html where url="https://twitter.com/thinkphp" and xpath="//ol[@id='stream-items-id']//li"</title>
+   <link rel="stylesheet" href="http://yui.yahooapis.com/2.7.0/build/reset-fonts-grids/reset-fonts-grids.css" type="text/css">
+   <style type="text/css">
+   html,body{font-family: helvetica,arial,sans-serif;}
+   #bd{background-color: #ccc}
+   #tweets ul {display: block}
+   #tweets li { 
+    margin: 0;
+    border-bottom: 1px dashed #ccc;
+    padding: 15px 5px;
+    overflow: hidden;
+    border-bottom: 1px solid #eee;}
+    strong{font-size: 20px} 
+    div.header{background:#ffffDD}
+   #tweets a{color: #393}
+   #tweets li:hover {background-color: #69c;color: #fff}
+   #tweets li:hover a{color: #f7fdc2}
+    h1{font-size: 40px;background: #69c}
+    h2.clearfix{font-size: 40px;font-weight: bold}
+   #ft{color: #111;text-align: left;font-family: helvetica,arial,verdana,sans-serif;font-size: 11px;background: #69c;padding: 5px} 
+   #ft a{color: #fff;}
+   </style>
+<script src="http://www.google.com/jsapi?key=ABQIAAAA1XbMiDxx_BTCY2_FkPh06RRaGTYH6UMl8mADNa0YKuWNNa8VNxQEerTAUcfkyrr6OwBovxn7TDAH5Q"></script>
+<script type="text/javascript">google.load("mootools", "1.3");</script>
+<script type="text/javascript" src="http://moo.thinkphp.ro/playground/Request.Weather/Request.JSONP.js"></script>
+<script type="text/javascript">
+/*
+Description: 
+      -create a class ShowTweets that extends Request.JSONP using script tag injection and handles callbacks
+#method send(options) - make the request
+*/
+        var ShowTweets = new Class({
+            Extends: Request.JSONP,
+            options: {
+                url: '',
+                data: {
+                   format: 'xml' 
+                } 
+            },
+            initialize: function(username,options){
+                 this.parent(options);
+                 var root = "http://query.yahooapis.com/v1/public/yql?q=",
+                     yql = 'select * from html where url="http://twitter.com/'+username+'" and xpath="//ol[@id=\'stream-items-id\']//li"',
+                     url = root + encodeURIComponent(yql);
+                     this.options.url = url;
+                     this.username = username;           
+            },
+            clean: function(text) {
+                   text = text.replace('<span','<li')
+                          .replace('</span>','</li>')
+                          .replace(/href="\//gi,'href="http://twitter.com/');
+              return text;
+            }              
+        });
+
+   /* Utilities */
+
+   if(!String.prototype.parseQueryString) {
+
+     String.prototype.parseQueryString = function() {
+
+            var mix = {};
+
+            var vars = this.split(/[&;]/);   
+
+                 if(vars.length > 0) {
+
+                    vars.each(function(val){
+
+                         var key = val.split("=");
+
+                         if(key.length && key.length == 2) {
+
+                            mix[key[0]] = key[1];
+                         }
+                    });   
+                 }       
+
+        return mix;   
+     };
+   }
+
+   function getQueryStringValue(key) {
+     
+        try {
+          return getQueryStringValues()[key];
+        }catch(e){return null;}
+   };
+
+   function getQueryStringValues(){
+
+        var win = document.location.href;
+
+        //get query string
+        var qs = win.split("?")[1];
+
+        try{
+           if(qs){return qs.parseQueryString();}
+        }catch(e){return null;} 
+
+   };
+
+var user = 'codepo8';
+
+if(getQueryStringValue('user')) {   
+   
+    user = getQueryStringValue('user');
+}
+
+window.addEvent('domready',function(){
+
+        new ShowTweets(user,{
+              onComplete: function(o) {
+                   if(window.console){console.log(o);}
+                   var data = o.results; 
+                   if(data && data.length>0){           
+                     var output = '<ul>'; 
+                     for(var i=0;i<data.length;i++) {
+                         output += this.clean(data[i]);   
+                     }
+                    output += '</ul>';
+                    document.id('tweets').set('html',output);
+                   }else{document.id('tweets').set('text','No results found.');}
+
+                   /* new request JSONP-X for header username+avatar*/
+                   var username = this.username;
+                   new Request.JSONP({
+                       url: "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22https%3A%2F%2Ftwitter.com%2Fthinkphp%22%20and%20xpath%3D%22%2F%2Fdiv%5B%40class%3D'profile-header-inner%20flex-module%20clearfix'%5D%22&diagnostics=true",
+                       data: {format: 'xml'},
+                       onComplete: function(o){
+                             if(window.console){console.log(o);}
+                             document.id('owner').set('html',o.results);
+                       },
+                       onRequest: function(script) {
+                              var badge = document.id('owner');
+                              if(!badge) {return;}
+                              badge.set('text','Loading...');
+                       }
+
+                   }).send(); 
+            },
+            onRequest: function(script) {
+                var badge = document.id('tweets');
+                if(!badge) {return;}
+                badge.set('text','Loading...');
+            }
+        }).send();
+
+});//end DOMReady
+
+</script>
+</head>
+<body>
+<div id="doc" class="yui-t7">
+   <div id="hd" role="banner"><h1>select * from html where url="https://twitter.com/thinkphp" and xpath="//ol[@id='stream-items-id']//li"</h1></div>
+   <div id="bd" role="main">
+      <div id="owner"></div>
+	<div class="yui-g" id="tweets"> 
+	</div>
+   </div>
+  <div id="ft" role="contentinfo"><p>written by @<a href="http://twitter.com/thinkphp">thinkphp</a> using class ShowTweets that extends Request.JSONP</p></div>
+</div>
+
+</body>
+</html>
