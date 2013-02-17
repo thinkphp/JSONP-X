@@ -43,6 +43,12 @@
     .blogRackTitle a{color: #ccc}
 
     pre{color: #ccc;clear: both;margin-top: 20px}
+   div.post-inner {
+    border-bottom: 1px solid #DDDDDD;
+    clear: both;
+    margin-bottom: 3em;
+    padding: 0 0 2em;
+    width: 100%;}
 
 ul.projects {width: 700px;position: relative}
 .projects li{
@@ -76,29 +82,37 @@ margin-bottom:5px;
    <div id="bd" role="main">
 
 	<div class="yui-g">
-             <pre><code>select * from html where url="http://twitter.com/thinkphp" and xpath = "//div[@id=\'following_list\']"</code></pre>
-             <p>Following</p>
+             <pre><code>select * from html where url="https://twitter.com/thinkphp" and xpath="//div[@class=\'profile-header-inner flex-module clearfix\']"</code></pre>
+             <p>Avatar Twitter</p>
              <div id="container"></div>
 
-             <pre><code>select * from html where url="http://www.wait-till-i.com/talks-and-conference-participation/" and xpath="//ul" limit 1</code></pre>
-             <p>Upcoming</p>
+
+             <pre><code>select * from html where url="https://hacks.mozilla.org/demos/" and xpath="//div[@id=\'content-bar\']" limit 1</code></pre>
+             <p>Mozilla Hack Demos</p>
              <div id="container1"></div>
 
-             <pre><code>select * from html where url="http://developer.yahoo.net/blog/archives/2009/07/fun_with_placemaker.html" and xpath="//div[@id=\'widgets-recent-posts-3\']" limit 1</code></pre>
-             <p>Recent Posts YDN</p>
+             <pre><code>select * from html where url="http://developer.yahoo.com/blogs/ydn/" and xpath="//div[@id=\'ydn-blog-features\']" limit 1</code></pre>
+             <p>YDN Blog</p>
              <div id="container2"></div>
 
-             <pre><code>select * from html where url="http://developer.yahoo.net/blog/archives/2009/07/fun_with_placemaker.html" and xpath="//div[@id=\'widgets-delicious-widget-4\']" limit 1</code></pre>
-             <p>Recent Links YDN</p>
-             <div id="container4"></div>
+             <pre><code></code></pre>
+             <p>Dev Opera</p>
+             <div id="container3"></div>
 
-             <pre><code>select * from html where url="http://developer.yahoo.net/blog/archives/2009/07/fun_with_placemaker.html" and xpath="//div[@id=\'widgets-upcoming-widget-4\']" limit 1</code></pre>
-             <p>Upcoming Events YDN</p>
+             <pre><code>select * from html where url="http://www.html5rocks.com/en/" and xpath="//ul[@id='updates_list']"</code></pre>
+             <p>HTML5 Rocks</p>
              <div id="container5"></div>
 
-             <p>Recent YUI Blog</p>
+
+             <pre><code></code></pre>
+             <p>dailyjs.com Blog</p>
+             <div id="container6"></div>
+
+             <pre><code></code></pre>
+             <p>DevOpera Lastest blog</p>
              <div id="container7"></div>
 
+             <pre><code>select * from html where url="http://mootools.net/forge/" and xpath="//div[@class=\'block\']" limit 1</code></pre>
              <p>Forge MooTools</p>
              <div id="forge"></div>
 
@@ -114,17 +128,17 @@ margin-bottom:5px;
 
         function $(id) {return document.getElementById(id);}
 
-        function seed(o) {
+        function twitter(o) {
 
                  var output = $('container');
 
-                 var content = o.results[0].replace(/href="\//g,'href="http://twitter.com/');
+                 var content = o.results[0];
 
                      output.innerHTML = content;
         }   
 
 
-        function seed2(o) {
+        function mozilla(o) {
 
                  var output = $('container1');
 
@@ -133,7 +147,7 @@ margin-bottom:5px;
                      output.innerHTML = content;
         }   
 
-        function seed3(o) {
+        function ydn(o) {
 
                  var output = $('container2');
 
@@ -143,17 +157,8 @@ margin-bottom:5px;
         }   
 
 
-        function seed4(o) {
 
-                 var output = $('container4');
-
-                 var content = o.results[0];
-
-                     output.innerHTML = content;
-        }   
-
-
-        function seed5(o) {
+        function html5rock(o) {
 
                  var output = $('container5');
 
@@ -162,9 +167,9 @@ margin-bottom:5px;
                      output.innerHTML = content;
         }   
 
-        function seed7(o) {
+        function dalyjs(o) {
 
-                 var output = $('container7');
+                 var output = $('container6');
 
                  var content = o.results[0];
 
@@ -193,47 +198,58 @@ margin-bottom:5px;
 
  var root = 'http://query.yahooapis.com/v1/public/yql?q=';
 
- var yql = 'select * from html where url="http://twitter.com/thinkphp" and xpath = "//div[@id=\'following_list\']"';
+ var twitteryql = 'select * from html where url="https://twitter.com/thinkphp" and xpath="//div[@class=\'profile-header-inner flex-module clearfix\']"';
 
- var src = root + encodeURIComponent(yql) + '&diagnostics=false&format=xml&callback=seed';
+ var src = root + encodeURIComponent(twitteryql) + '&diagnostics=false&format=xml&callback=twitter';
 
      loadScript(src,function(){if(window.console) console.log('loaded json');});
 
- var yql2 = 'select * from html where url="http://www.wait-till-i.com/talks-and-conference-participation/" and xpath="//ul" limit 1';
+ //---
+ //#1
+ var mozillayql = 'select * from html where url="https://hacks.mozilla.org/demos/" and xpath="//div[@id=\'content-bar\']" limit 1';
 
- var src2 = root + encodeURIComponent(yql2) + '&diagnostics=false&format=xml&callback=seed2';
+ var src2 = root + encodeURIComponent(mozillayql) + '&diagnostics=false&format=xml&callback=mozilla';
 
-     loadScript(src2,function(){if(window.console) console.log('loaded json');});
+     loadScript(src2, function(){if(window.console) console.log('loaded json');});
 
 
- var yql3 = 'select * from html where url="http://developer.yahoo.net/blog/archives/2009/07/fun_with_placemaker.html" and xpath="//div[@id=\'widgets-recent-posts-3\']" limit 1';
+ //--
+ //#2
+ var ydn = 'select * from html where url="http://developer.yahoo.com/blogs/ydn/" and xpath="//div[@id=\'ydn-blog-features\']" limit 1';
 
- var src3 = root + encodeURIComponent(yql3) + '&diagnostics=false&format=xml&callback=seed3';
+ var src3 = root + encodeURIComponent(ydn) + '&diagnostics=false&format=xml&callback=ydn';
 
      loadScript(src3,function(){if(window.console) console.log('loaded json');});
 
 
- var yql4 = 'select * from html where url="http://developer.yahoo.net/blog/archives/2009/07/fun_with_placemaker.html" and xpath="//div[@id=\'widgets-delicious-widget-4\']" limit 1';
+ //--
+ //#3
+ var html5rockyql = 'select * from html where url="http://www.html5rocks.com/en/" and xpath="//ul[@id=\'updates_list\']" limit 1';
 
- var src4 = root + encodeURIComponent(yql4) + '&diagnostics=false&format=xml&callback=seed4';
+ var src4 = root + encodeURIComponent(html5rockyql) + '&diagnostics=false&format=xml&callback=html5rock';
 
      loadScript(src4,function(){if(window.console) console.log('loaded json');});
 
 
- var yql5 = 'select * from html where url="http://developer.yahoo.net/blog/archives/2009/07/fun_with_placemaker.html" and xpath="//div[@id=\'widgets-upcoming-widget-4\']" limit 1';
+//---
+ //#4
+ var dalyjsyql = 'select * from html where url="http://dailyjs.com/" and xpath="//div[@class=\'post-inner\']" limit 1';
 
- var src5 = root + encodeURIComponent(yql5) + '&diagnostics=false&format=xml&callback=seed5';
+ var src5 = root + encodeURIComponent( dalyjsyql ) + '&diagnostics=false&format=xml&callback=dalyjs';
 
      loadScript(src5,function(){console.log('loaded json');});
 
 
- var yqlyui = 'select * from html where url="http://yuiblog.com/" and xpath="//div[@id=\'recent_posts\']" limit 1';
+ //--
+ var devoperayql = '';
 
- var srcyui = root + encodeURIComponent(yqlyui) + '&diagnostics=false&format=xml&callback=seed7';
+ //#5
+ var devopera = root + encodeURIComponent(devoperayql) + '&diagnostics=false&format=xml&callback=seed7';
 
-     loadScript(srcyui,function(){if(window.console) console.log('loaded json');});
+     loadScript(devopera,function(){if(window.console) console.log('loaded json');});
 
-
+ //--
+ //#6
  var yqlforge = 'select * from html where url="http://mootools.net/forge/" and xpath="//div[@class=\'block\']" limit 1';
 
  var srcforge = root + encodeURIComponent(yqlforge) + '&diagnostics=false&format=xml&callback=seed8';
