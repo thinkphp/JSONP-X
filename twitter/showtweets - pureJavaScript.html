@@ -1,0 +1,231 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+   <title>select * from html where url="http://twitter.com/thinkphp" and xpath="//h2[@class='thumbs clearfix']"</title>
+   <link rel="stylesheet" href="http://yui.yahooapis.com/2.7.0/build/reset-fonts-grids/reset-fonts-grids.css" type="text/css">
+   <style type="text/css">
+   * html,body{margin:0;padding:0}
+   html,body{font-family: helvetica,arial,sans-serif}
+   #bd{background-color: #ccc}
+   #tweets ul {display: block}
+   #tweets li { 
+    margin: 0;
+    border-bottom: 1px dashed #ccc;
+    padding: 15px 5px;
+    overflow: hidden;
+    border-bottom: 1px solid #eee;}
+    strong{font-size: 20px} 
+    div.header{background:#ffffDD}
+   #tweets li:hover {background-color: #69c;color: #fff}
+    h1{font-size: 40px;background: #69c}
+
+   #ft{color: #444;text-align: left} 
+   </style>
+</head>
+<body>
+<div id="doc" class="yui-t7">
+   <div id="hd" role="banner"><h1>select * from html where url="https://twitter.com/thinkphp" and xpath="//ol[@id='stream-items-id']//li"</h1></div>
+   <div id="bd" role="main">
+      <div id="owner"></div>
+	<div class="yui-g" id="tweets"> 
+	</div>
+   </div>
+  <div id="ft" role="contentinfo"><p>written by @<a href="http://twitter.com/thinkphp">thinkphp</a></p></div>
+</div>
+<script type="text/javascript">
+
+
+   /****** start Utilities *****/
+
+   if(!Array.prototype.forEach) {
+   
+       Array.prototype.forEach = function(f,thisp){
+
+              for(var index=0;index<this.length;index++) {
+
+                  f.call(thisp||null,this[index],this,index); 
+              } 
+       }     
+   }
+
+   if(!String.prototype.parseQueryString) {
+
+     String.prototype.parseQueryString = function() {
+
+            var mix = {};
+
+            var vars = this.split(/[&;]/);   
+
+                 if(vars.length > 0) {
+
+                    vars.forEach(function(val){
+
+                         var key = val.split("=");
+
+                         if(key.length && key.length == 2) {
+
+                            mix[key[0]] = key[1];
+                         }
+                    });   
+                 }       
+
+        return mix;   
+     };
+   }
+
+   function getQueryStringValue(key) {
+     
+        try {
+          return getQueryStringValues()[key];
+        }catch(e){return null;}
+   };
+
+   function getQueryStringValues(){
+
+        var win = document.location.href;
+
+        //get query string
+        var qs = win.split("?")[1];
+
+        try{
+           if(qs){return qs.parseQueryString();}
+        }catch(e){return null;} 
+
+   };
+
+   /****** end Utilities *****/
+
+
+var user = 'codepo8';
+
+if(getQueryStringValue('user')) {   
+       user = getQueryStringValue('user');
+}
+
+
+//show me love to the Object Module Pattern
+var twitterbadge = function() {
+
+    /* config */
+    var config = {
+        username: 'thinkphp'
+    };
+
+    /* private method */
+    function init(options) {
+
+                if(options.username) {config.username = options.username;}
+
+                badge = document.getElementById('tweets');
+
+                if(!badge) {return;}
+
+                badge.innerHTML = 'Loading...';
+
+                if(badge) {  
+
+                      var root = "http://query.yahooapis.com/v1/public/yql?q=";
+
+                      var yql = 'select * from html where url="https://twitter.com/thinkphp" and xpath="//ol[@id=\'stream-items-id\']//li"';
+
+                      var url = root + encodeURIComponent(yql) + '&format=xml&callback=twitterbadge.seed';
+
+                      var rest = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22http%3A%2F%2Ftwitter.com%2F"+config.username+"%22%20and%20xpath%3D%22%2F%2Fh2%5B%40class%3D'thumb%20clearfix'%5D%22&format=json&callback=twitterbadge.avatar";
+
+                      loadScript(rest,function(){loadScript(url,function(){if(window.console){console.log('YQL:' + yql);console.log('Loaded SCRIPT and injected into HEAD');}});});
+                }
+    };
+
+    /* private method */
+    function loadScript(url,callback) {
+
+             var script = document.createElement('script');
+
+                 script.setAttribute('type','text/javascript');
+
+                 if(script.readyState) {
+
+                      script.onreadystatechange = function() {
+
+                               if(script.readyState == 'loaded' || script.readyState == 'complete' ) {
+
+                                      script.onreadystatechange = null;
+
+                                      callback(); 
+                               }  
+                      }
+
+                 } else {
+
+                      script.onload = function(){
+
+                             callback();
+                      } 
+                 }   
+
+                 script.setAttribute('src',url);
+
+                 document.getElementsByTagName('head')[0].appendChild(script); 
+    };
+
+    /* private method */
+    /*
+    @description 
+         - function callback from service twitter that receives data as arguments
+    @param o (Object) data from services and handles callback
+    @return none. 
+    */
+    function seed(o) {
+        var data = o.results; 
+        if(data && data.length>0){           
+           var output = '<ul>'; 
+           for(var i=0;i<data.length;i++) {
+             output += clean(data[i]);   
+           }
+           output += '</ul>';
+           document.getElementById('tweets').innerHTML = output;
+         }else{document.getElementById('tweets').innerHTML = 'No results found.';}
+            
+    };
+
+    /* private method */
+    /*
+    @param input - text (String) the text is cleaned through replace SPAN with LI tag
+    @return text (String) text replaced
+    */
+    function clean(text) {
+       text = text.replace('<span','<li'); 
+       text = text.replace('</span>','</li>');
+       text = text.replace(/href="\//gi,'href="http://twitter.com/');
+      return text;
+    }//end function
+
+    /* private method 
+       @param o (*Object*)- the object received from service twitter through REST GET.
+       @return none.
+     */
+    function avatar(o) {
+            if(window.console){console.log(o);}
+            var template = '<h2 class="thumb clearfix">'+
+                           '<a href="http://twitter.com{account}">'+
+                           '<img alt="" border="0" height="73" id="profile-image" src="{src}" valign="middle" width="73"/>'+
+                           '</a>{username}</h2>';
+            var data = o.query.results.h2; 
+            var h2 = data[0];
+            var username = h2.content; 
+            var href = h2.a.href;
+            var src = h2.a.img.src  
+            document.getElementById('owner').innerHTML = template.replace('{src}',src).replace('{username}',username).replace('{account}',href);
+    }
+
+    /* return an object that points at the private methods which I want to revealed*/
+    return {init: init, seed: seed,avatar: avatar};
+
+}();//do EXEC
+
+//do initialization of the singleton
+twitterbadge.init({username: user});
+</script>
+
+</body>
+</html>
